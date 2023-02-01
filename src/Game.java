@@ -1,16 +1,26 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Game {
 
 
     HashSet<String> words = FileReader.readFile(".\\words.txt");
 
+    HashSet<Character> disallowedChars = new HashSet<>();
+
+
+    public Game(int difficulty) {
+        if(difficulty == 1) {
+            disallowedChars.addAll(Arrays.asList('J', 'V', 'Q', 'X', 'Y', 'Z'));
+        }
+    }
+
 
     public void play() {
-        System.out.println("hi");
+        int totalScore = 0;
+        totalScore += playRound(3);
+        totalScore += playRound(3);
+        totalScore += playRound(3);
+        System.out.println("You got " + totalScore + " points that game. Congratulations!");
     }
 
 
@@ -27,8 +37,11 @@ public class Game {
 
         System.out.println(isValidWord(input, chars));
 
-        return -1;
-
+        if(isValidWord(input, chars)) {
+            return input.length();
+        } else {
+            return 0;
+        }
     }
 
 
@@ -36,7 +49,12 @@ public class Game {
         ArrayList<Character> chars = new ArrayList<>(charCount);
         Random random = new Random();
         for(int i = 0 ; i < charCount ; i++) {
-            chars.add((char) (random.nextInt(26) + 65));
+            char c = (char) (random.nextInt(26) + 65);
+            if(!disallowedChars.contains(c)) {
+                chars.add(c);
+            } else {
+                i--;
+            }
         }
         return chars;
     }
